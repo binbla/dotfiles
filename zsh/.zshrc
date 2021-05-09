@@ -53,7 +53,9 @@ alias lsp='sudo pacman -Syu'
 alias pacwoman='yay -Syu'
 alias syu='yay -Syu'
 # Set proxy to the system console
-alias setproxy="export ALL_PROXY=socks5://127.0.0.1:1089" 
+socks5ProxyPort=20170
+httpProxyPort=20171
+alias setproxy="export ALL_PROXY=socks5://127.0.0.1:${socks5ProxyPort}"
 alias unsetproxy="unset ALL_PROXY"
 
 # 帮助命令
@@ -67,5 +69,30 @@ alias help=run-help
 #仿fish高亮
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#POWERLINE
+#POWERLINE_BINDINGS=/usr/share/powerline/bindings/
+#powerline-daemon -q  # run powerline daemon
+#source $POWERLINE_BINDINGS/zsh/powerline.zsh
 
+export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
+export ZSH_AUTOSUGGEST_USE_ASYNC=true
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+function zsh_stats() {
+  fc -l 1 | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n20
+}
+
+function ranger-cd {
+    tempfile="$(mktemp)"
+    /usr/bin/ranger --choosedir="$tempfile" "${@:-$(pwd)}"
+    test -f "$tempfile" &&
+    if [ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]; then
+        cd -- "$(cat "$tempfile")"
+    fi
+    rm -f -- "$tempfile"
+}
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#[ -f $HOME/.bashrc ] && source $HOME/.bashrc
+[ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
