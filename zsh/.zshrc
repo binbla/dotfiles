@@ -5,6 +5,17 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig=". ~/.zshrc"
 alias ohmyzsh=". ~/.oh-my-zsh"
+export EDITOR='vim'
+export VISUAL='vim'
+
+#用户二进制程序目录
+if [ -d "$HOME/.bin" ] ;
+  then PATH="$HOME/.bin:$PATH"
+fi
+
+if [ -d "$HOME/.local/bin" ] ;
+  then PATH="$HOME/.local/bin:$PATH"
+fi
 
 # 自动补全
 autoload -U compinit promptinit
@@ -13,6 +24,7 @@ promptinit
 setopt autocd extendedglob
 unsetopt beep
 bindkey -v
+
 # 启动使用方向键控制的自动补全
 zstyle ':completion:*' menu select
 
@@ -40,32 +52,8 @@ unset usign
 # %m	计算机的主机名（在第一个句号之前截断）
 # %l  当前tty
 
-
 # 自动更新path中可执行程序
 zstyle ':completion:*' rehash true
-
-alias ls='ls --color=auto'
-alias ll='ls -alF'
-alias la='ls -A'
-alias lm='ls -al | more'
-alias vi='vim'
-alias h='history'
-alias lsp='sudo pacman -Syu'
-alias pacwoman='yay -Syu'
-alias syu='yay -Syu'
-# Set proxy to the system console
-socks5ProxyPort=20170
-httpProxyPort=20171
-alias setproxy="export ALL_PROXY=socks5://127.0.0.1:${socks5ProxyPort}"
-alias unsetproxy="unset ALL_PROXY"
-
-# 帮助命令
-autoload -U run-help
-autoload run-help-git
-autoload run-help-svn
-autoload run-help-svk
-#unalias run-help
-alias help=run-help
 
 #仿fish高亮
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -94,6 +82,11 @@ function ranger-cd {
     rm -f -- "$tempfile"
 }
 
+#fish高亮
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-#[ -f $HOME/.bashrc ] && source $HOME/.bashrc
-[ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
+
+#将alias单独放在一起
+[ -f $HOME/.zshrc-alias ] && source $HOME/.zshrc-alias
+
+#逼格
+neofetch

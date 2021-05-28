@@ -5,16 +5,46 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-alias ls='ls --color=auto'
-alias ll='ls -alF'
-alias la='ls -A'
-alias lm='ls -al | more'
-alias vi='vim'
-alias h='history'
-# Set proxy to the system console
-alias setproxy="export ALL_PROXY=socks5://127.0.0.1:1089" 
-alias unsetproxy="unset ALL_PROXY"
-#export ALL_PROXY=socks5://127.0.0.1:1089
+#
+# ~/.bashrc
+#
+
+export HISTCONTROL=ignoreboth:erasedups
+bind "set completion-ignore-case on"
+# Make nano the default editor
+export EDITOR='vim'
+export VISUAL='vim'
+
 PS1='[\u@\h \W]\$ '
 
+if [ -d "$HOME/.bin" ] ;
+  then PATH="$HOME/.bin:$PATH"
+fi
+
+if [ -d "$HOME/.local/bin" ] ;
+  then PATH="$HOME/.local/bin:$PATH"
+fi
+
+[[ -f ~/.bashrc-alias ]] && . ~/.bashrc-alias
+PS1='[\u@\h \W]\$ '
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# reporting tools - install when not installed
+# install neofetch
+neofetch
+# install screenfetch
+#screenfetch
+# install ufetch-git
+#ufetch
+# install ufetch-arco-git
+#ufetch-arco
+# install arcolinux-paleofetch-git
+#paleofetch
+# install alsi
+#alsi
+# install arcolinux-bin-git - standard on ArcoLinux isos (or sfetch - smaller)
+#hfetch
+# install lolcat
+# neofetch | lolcat
+
+
+
