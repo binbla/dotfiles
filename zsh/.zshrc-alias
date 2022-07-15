@@ -192,11 +192,11 @@ alias sr="sudo reboot"
 alias xd="ls /usr/share/xsessions"
 
 # Set proxy to the system console
-socks5ProxyPort=1089
-httpProxyPort=8889
-httpProxyPortx=8889
-#alias setproxy="export ALL_PROXY=socks5://127.0.0.1:${socks5ProxyPort}"
-alias setproxy="export ALL_PROXY=http://localhost:${httpProxyPortx}"
+socks5ProxyPort=20170
+httpProxyPort=20171
+httpProxyPortx=20173
+alias setproxy="export ALL_PROXY=socks5://127.0.0.1:${socks5ProxyPort}"
+#alias setproxy="export ALL_PROXY=http://localhost:${httpProxyPortx}"
 alias unsetproxy="unset ALL_PROXY"
 
 # 帮助命令
