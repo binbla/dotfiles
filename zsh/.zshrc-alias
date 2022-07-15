@@ -1,5 +1,10 @@
- 
+#awesome-configure-test
+alias show="Xephyr -ac -br -noreset -screen 1600x900 :1 &;sleep 1;DISPLAY=:1.0 awesome"
+#cmatrix换个颜色
+alias cmc='cmatrix -b -C cyan -u 5'
 
+#nmap
+alias scan='nmap'
 #list
 alias ls='ls --color=auto'
 alias la='ls -a'
@@ -187,9 +192,9 @@ alias sr="sudo reboot"
 alias xd="ls /usr/share/xsessions"
 
 # Set proxy to the system console
-socks5ProxyPort=20170
-httpProxyPort=20171
-httpProxyPortx=20172
+socks5ProxyPort=1089
+httpProxyPort=8889
+httpProxyPortx=8889
 #alias setproxy="export ALL_PROXY=socks5://127.0.0.1:${socks5ProxyPort}"
 alias setproxy="export ALL_PROXY=http://localhost:${httpProxyPortx}"
 alias unsetproxy="unset ALL_PROXY"
@@ -201,3 +206,13 @@ autoload run-help-svn
 autoload run-help-svk
 #unalias run-help
 alias help=run-help
+
+# optimus-manager
+alias intel="optimus-manager --switch integrated"
+alias nvidia="optimux-manager --switch nvidia"
+alias hybrid="optimus-manager --switch hybrid"
+
+# nas
+alias mnas='sudo mount -t cifs -o credentials=/etc/credentials/share,uid=1000,gid=1000 //enddate.cn/Media /mnt/nas/Media;sudo mount -t cifs -o credentials=/etc/credentials/share,uid=1000,gid=1000 //enddate.cn/Documents /mnt/nas/Documents;sudo mount -t cifs -o credentials=/etc/credentials/share,uid=1000,gid=1000 //enddate.cn/Code /mnt/nas/Code;sudo mount -t cifs -o credentials=/etc/credentials/share,uid=1000,gid=1000 //enddate.cn/Backups /mnt/nas/Backups'
+alias umnas='sudo umount -R /mnt/nas/*'
+
