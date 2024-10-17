@@ -11,7 +11,7 @@ alias ls='lsd --icon=never'
 alias la='lsd -a --icon=never'
 alias ll='lsd -la --icon=never'
 alias l='lsd --icon=never'
-alias l.="ls -A --icon=never | egrep '^\.'"
+alias l.="ls -A --icon=never | grep '^\.'"
 
 #list
 #alias ls='ls --color=auto'
