@@ -5,12 +5,20 @@ alias cmc='cmatrix -b -C cyan -u 5'
 
 #nmap
 alias scan='nmap'
+#Need install the software "lsd bat prettyping htop"
+#list enhance
+alias ls='lsd --icon=never'
+alias la='lsd -a --icon=never'
+alias ll='lsd -la --icon=never'
+alias l='lsd --icon=never'
+alias l.="ls -A --icon=never | egrep '^\.'"
+
 #list
-alias ls='ls --color=auto'
-alias la='ls -a'
-alias ll='ls -la'
-alias l='ls'
-alias l.="ls -A | egrep '^\.'"
+#alias ls='ls --color=auto'
+#alias la='ls -a'
+#alias ll='ls -la'
+#alias l='ls'
+#alias l.="ls -A | egrep '^\.'"
 
 #fix obvious typo's
 alias cd..='cd ..'
