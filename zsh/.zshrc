@@ -9,7 +9,7 @@ export ZDOTDIR="${DOTFILES}/zsh"
 export ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${ZSH_VERSION}"
 
 ZSH_THEME="robbyrussell"
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig=". ~/.zshrc"
 alias ohmyzsh=". ~/.oh-my-zsh"
