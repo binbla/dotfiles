@@ -1,5 +1,10 @@
 #git stow zsh og-my-zsh-git powerline ranger exa zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search
+# ohmyzsh
 export ZSH="/usr/share/oh-my-zsh"
+# 补全缓存 提前定义好缓存目录
+export ZDOTDIR="${HOME}/dotfiles/zsh"
+export ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${ZSH_VERSION}"
+
 ZSH_THEME="robbyrussell"
 plugins=(git)
 source $ZSH/oh-my-zsh.sh
