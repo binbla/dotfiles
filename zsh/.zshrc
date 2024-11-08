@@ -1,12 +1,15 @@
 #git stow zsh og-my-zsh-git powerline ranger exa zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search
 # ohmyzsh
 export ZSH="/usr/share/oh-my-zsh"
+# dot文件目录
+export DOTFILES="${HOME}/dotfiles"
+
 # 补全缓存 提前定义好缓存目录
-export ZDOTDIR="${HOME}/dotfiles/zsh"
+export ZDOTDIR="${DOTFILES}/zsh"
 export ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${ZSH_VERSION}"
 
 ZSH_THEME="robbyrussell"
-plugins=(git)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 alias zshconfig=". ~/.zshrc"
 alias ohmyzsh=". ~/.oh-my-zsh"
@@ -60,18 +63,19 @@ unset usign
 # 自动更新path中可执行程序
 zstyle ':completion:*' rehash true
 
-#仿fish高亮
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#仿fish高亮 已用plugin加载
+#source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #POWERLINE
 #POWERLINE_BINDINGS=/usr/share/powerline/bindings/
 #powerline-daemon -q  # run powerline daemon
 #source $POWERLINE_BINDINGS/zsh/powerline.zsh
 
+#命令建议 已用plugin加载
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+#source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+#source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 function zsh_stats() {
   fc -l 1 | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n20
