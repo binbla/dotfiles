@@ -2,17 +2,19 @@
 
 # ohmyzsh
 export ZSH="/usr/share/oh-my-zsh"
+# zsh Plugin目录
+export ZSH_PLUGINS_DIR="/usr/share/zsh/plugins"
 # dot文件目录
 export DOTFILES_DIR="${HOME}/dotfiles"
 
 # 补全缓存 提前定义好缓存目录
-export ZDOTDIR="${DOTFILES}/zsh"
+export ZDOTDIR="${DOTFILES_DIR}/zsh"
 export ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${ZSH_VERSION}"
 
-source $ZSH/oh-my-zsh.sh
 ZSH_THEME="robbyrussell"
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search)
-
+# oh-my-zsh的插件
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
 alias zshconfig=". ~/.zshrc"
 alias ohmyzsh=". ~/.oh-my-zsh"
 export EDITOR='vim'
@@ -66,7 +68,7 @@ unset usign
 zstyle ':completion:*' rehash true
 
 #仿fish高亮 已用plugin加载
-#source ${ZSH_PLUGINS_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ${ZSH_PLUGINS_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #POWERLINE
 #POWERLINE_BINDINGS=/usr/share/powerline/bindings/
@@ -76,8 +78,8 @@ zstyle ':completion:*' rehash true
 #命令建议 已用plugin加载
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
-#source ${ZSH_PLUGINS_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh
-#source ${ZSH_PLUGINS_DIR}/zsh-history-substring-search/zsh-history-substring-search.zsh
+source ${ZSH_PLUGINS_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ${ZSH_PLUGINS_DIR}/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 function zsh_stats() {
   fc -l 1 | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n20
@@ -100,4 +102,6 @@ function ranger-cd {
 [ -f $HOME/.zshrc-alias ] && source $HOME/.zshrc-alias
 
 #逼格
-neofetch
+if [[ $- == *i* ]]; then
+    neofetch
+fi
