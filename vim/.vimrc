@@ -1,3 +1,4 @@
+" yay -S vim-plug
 call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
@@ -57,51 +58,6 @@ map <leader>7 :b 7<CR>
 map <leader>8 :b 8<CR>
 map <leader>9 :b 9<CR>
 
-"新建.c,.h,.sh,.java文件，自动插入文件头 
-autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java, exec ":call SetTitle()" 
-""定义函数SetTitle，自动插入文件头 
-func SetTitle() 
-    if  &filetype == 'sh' 
-        call setline(1, "# ============================================================") 
-        call append(line("."), "# File Name : ".expand("%")) 
-        call append(line(".")+1, "# Author : thrbla") 
-        call append(line(".")+2, "# maili : admin@shawshang.cn") 
-        call append(line(".")+3, "# Created Time : ".strftime("%c")) 
-        call append(line(".")+4, "# Discriptioin : ") 
-        call append(line(".")+5, "# ============================================================")
-    else 
-        call setline(1, "/*============================================================") 
-        call append(line("."), "*   > File Namei : ".expand("%")) 
-        call append(line(".")+1, "* > Author : thrbla ") 
-        call append(line(".")+2, "* > Mail : admin@shawshang.cn ") 
-        call append(line(".")+3, "* > Created Time : ".strftime("%c")) 
-        call append(line(".")+4, "* > Discription : ") 
-        call append(line(".")+5, " *==========================================================*/")
-    endif
-
-    if &filetype == 'sh'
-        call append(line(".")+6, "#!/bin/sh")
-        call append(line(".")+7, "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games")
-        call append(line(".")+8, "export PATH")
-        call append(line(".")+9, "")
-    endif
-    if &filetype == 'cpp'
-        call append(line(".")+6, "#include<iostream>")
-        call append(line(".")+7, "using namespace std;")
-        call append(line(".")+8, "")
-    endif
-    if &filetype == 'c'
-        call append(line(".")+6, "#include<stdio.h>")
-        call append(line(".")+7, "")
-    endif
-    if &filetype == 'java'
-    call append(line(".")+6,"public class ".expand("%:t:r"))
-    call append(line(".")+7,"")
-    endif
-    "新建文件后，自动定位到文件末尾
-    autocmd BufNewFile * normal G 
-endfunc 
-
 " 映射全选+复制 ctrl+a
 map <C-A> ggVGY
 map! <C-A> <Esc>ggVGY
@@ -127,14 +83,14 @@ set confirm
 set autoindent
 set cindent
 " Tab键的宽度
-set tabstop=2
-" 统一缩进为2
-set softtabstop=2
-set shiftwidth=2
+set tabstop=4
+" 统一缩进为4
+set softtabstop=4
+set shiftwidth=4
 " 不要用空格代替制表符
-set noexpandtab
+" set noexpandtab
 " 在行和段开始处使用制表符
-set smarttab
+" set smarttab
 " 显示行号
 set number
 " 历史记录数
