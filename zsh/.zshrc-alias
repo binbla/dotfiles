@@ -1,7 +1,10 @@
+# 需要安装软件：pacman -S cmatrix neofetch lsd nvim
+
 #awesome-configure-test
 alias show="Xephyr -ac -br -noreset -screen 1600x900 :1 &;sleep 1;DISPLAY=:1.0 awesome"
 #cmatrix换个颜色
 alias cmc='cmatrix -b -C cyan -u 5'
+alias vim='nvim'
 
 #nmap
 alias scan='nmap'
