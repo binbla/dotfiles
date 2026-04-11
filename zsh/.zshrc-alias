@@ -202,15 +202,72 @@ alias sr="sudo reboot"
 #give the list of all installed desktops - xsessions desktops
 alias xd="ls /usr/share/xsessions"
 
-# Set proxy to the system console
-proxy_host="127.0.0.1"
-socks5ProxyPort=7897
-httpProxyPort=7897
-httpProxyPortx=7897
-alias setproxy="export ALL_PROXY=socks5://${proxy_host}:${socks5ProxyPort}"
-alias sethttpproxy="export http_proxy=http://${proxy_host}:${httpProxyPort};export https_proxy=http://${proxy_host}:${httpProxyPortx}"
-#alias setproxy="export ALL_PROXY=http://localhost:${httpProxyPortx}"
-alias unsetproxy="unset ALL_PROXY"
+# 代理配置变量（请根据实际情况修改）
+# 默认值：SOCKS5 代理
+DEFAULT_PROXY_HOST="127.0.0.1"
+DEFAULT_SOCKS5_PORT="7890"
+DEFAULT_HTTP_PORT="7890"  # HTTP/HTTPS 代理端口（如 Clash 的 HTTP 端口）
+
+# 设置代理函数
+setproxy() {
+    # 支持参数传入，格式：setproxy [主机] [端口] [类型]
+    # 类型：socks5 (默认) 或 http
+    local host="${1:-$DEFAULT_PROXY_HOST}"
+    local port="${2:-$DEFAULT_SOCKS5_PORT}"
+    local type="${3:-socks5}"
+    
+    # 根据代理类型构建 URL
+    local proxy_url
+    if [ "$type" = "http" ]; then
+        proxy_url="http://${host}:${port}"
+    else
+        proxy_url="socks5://${host}:${port}"
+    fi
+    
+    # 标准环境变量（小写）
+    export all_proxy="$proxy_url"
+    export ALL_PROXY="$proxy_url"
+    
+    # HTTP/HTTPS 单独设置（当使用 HTTP 代理时需要）
+    if [ "$type" = "http" ]; then
+        export http_proxy="$proxy_url"
+        export HTTP_PROXY="$proxy_url"
+        export https_proxy="$proxy_url"
+        export HTTPS_PROXY="$proxy_url"
+    else
+        # SOCKS 代理也可以设置 http_proxy（部分应用需要）
+        export http_proxy="$proxy_url"
+        export HTTP_PROXY="$proxy_url"
+        export https_proxy="$proxy_url"
+        export HTTPS_PROXY="$proxy_url"
+    fi
+    
+    # 不使用代理的地址（可选）
+    export no_proxy="localhost,127.0.0.1,::1"
+    export NO_PROXY="localhost,127.0.0.1,::1"
+    
+    echo "✓ 代理已设置: $proxy_url"
+    echo "  环境变量: all_proxy, ALL_PROXY, http_proxy, HTTP_PROXY, https_proxy, HTTPS_PROXY"
+}
+
+# 取消代理函数
+unsetproxy() {
+    unset all_proxy ALL_PROXY
+    unset http_proxy HTTP_PROXY
+    unset https_proxy HTTPS_PROXY
+    unset no_proxy NO_PROXY
+    
+    echo "✓ 代理已取消"
+}
+
+# 查看当前代理状态
+showproxy() {
+    echo "当前代理配置:"
+    echo "  all_proxy: ${all_proxy:-未设置}"
+    echo "  http_proxy: ${http_proxy:-未设置}"
+    echo "  https_proxy: ${https_proxy:-未设置}"
+    echo "  no_proxy: ${no_proxy:-未设置}"
+}
 
 # 帮助命令
 autoload -U run-help
