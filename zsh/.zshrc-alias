@@ -214,7 +214,7 @@ setproxy() {
     # 类型：socks5 (默认) 或 http
     local host="${1:-$DEFAULT_PROXY_HOST}"
     local port="${2:-$DEFAULT_SOCKS5_PORT}"
-    local type="${3:-socks5}"
+    local type="${3:-http}"
     
     # 根据代理类型构建 URL
     local proxy_url
