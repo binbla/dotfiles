@@ -99,6 +99,7 @@ function ranger-cd {
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
+eval "$(pyenv virtualenv-init - zsh)"
 
 #fish高亮
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
