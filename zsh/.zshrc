@@ -1,4 +1,6 @@
-#git stow zsh og-my-zsh-git powerline ranger exa zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search
+# git stow zsh powerline ranger exa 
+# archlinuxcn: og-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search
+# AUR: filkoll neofetch
 
 # ohmyzsh
 export ZSH="/usr/share/oh-my-zsh"
@@ -111,3 +113,7 @@ eval "$(pyenv virtualenv-init - zsh)"
 if [[ $- == *i* ]]; then
     neofetch
 fi
+
+# 注册 command not found
+# source /usr/share/doc/pkgfile/command-not-found.zsh
+source /usr/share/doc/filkoll/command-not-found.zsh
