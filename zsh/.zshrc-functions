@@ -1,0 +1,454 @@
+# ==============================================================================
+# 文件：.zshrc-functions
+# ==============================================================================
+
+
+# ------------------------------------------------------------------------------
+# zsh_stats
+# ------------------------------------------------------------------------------
+#
+# 统计最常使用的命令。
+#
+# 默认显示前 20：
+#
+#   zsh_stats
+#
+# 自定义数量：
+#
+#   zsh_stats 50
+#
+zsh_stats() {
+    local limit="${1:-20}"
+
+    # 参数必须为正整数
+    if [[ "$limit" != <-> || "$limit" -le 0 ]]; then
+        print -u2 "usage: zsh_stats [count]"
+        return 1
+    fi
+
+    fc -l 1 |
+        awk '
+        {
+            i = 2
+            cmd = $i
+
+            # sudo / doas：
+            # 尽量跳过选项及其参数，
+            # 找到真正执行的命令。
+            if (cmd == "sudo" || cmd == "doas") {
+                i++
+
+                while (i <= NF) {
+
+                    # 常见需要参数的短选项
+                    if ($i == "-u" || $i == "-g" ||
+                        $i == "-h" || $i == "-p" ||
+                        $i == "-C" || $i == "-T") {
+                        i += 2
+                        continue
+                    }
+
+                    # 常见需要参数的长选项
+                    if ($i == "--user" || $i == "--group" ||
+                        $i == "--host" || $i == "--prompt") {
+                        i += 2
+                        continue
+                    }
+
+                    # --user=root
+                    if ($i ~ /^--[^=]+=.*$/) {
+                        i++
+                        continue
+                    }
+
+                    # 其他 option
+                    if ($i ~ /^-/) {
+                        i++
+                        continue
+                    }
+
+                    break
+                }
+
+                if (i <= NF)
+                    cmd = $i
+                else
+                    cmd = $2
+            }
+
+            # Zsh nocorrect modifier
+            else if (cmd == "nocorrect") {
+                if (NF >= 3)
+                    cmd = $3
+            }
+
+            # 忽略：
+            #
+            #   ./script
+            #   ../script
+            #   /usr/bin/foo
+            if (cmd != "" && cmd !~ /^[.\/]/) {
+                commands[cmd]++
+                total++
+            }
+        }
+
+        END {
+            if (total == 0)
+                exit
+
+            for (cmd in commands) {
+                printf "%7d %6.2f%%  %s\n",
+                    commands[cmd],
+                    commands[cmd] / total * 100,
+                    cmd
+            }
+        }' |
+        sort -nr |
+        head -n "$limit"
+}
+
+# ------------------------------------------------------------------------------
+# proxy
+# ------------------------------------------------------------------------------
+
+# 设置代理函数
+setproxy() {
+    # 支持参数传入，格式：setproxy [主机] [端口] [类型]
+    # 类型：socks5 (默认) 或 http
+    local host="${1:-$DEFAULT_PROXY_HOST}"
+    local port="${2:-$DEFAULT_SOCKS5_PORT}"
+    local type="${3:-http}"
+    
+    # 根据代理类型构建 URL
+    local proxy_url
+    if [ "$type" = "http" ]; then
+        proxy_url="http://${host}:${port}"
+    else
+        proxy_url="socks5://${host}:${port}"
+    fi
+    
+    # 标准环境变量（小写）
+    export all_proxy="$proxy_url"
+    export ALL_PROXY="$proxy_url"
+    
+    # HTTP/HTTPS 单独设置（当使用 HTTP 代理时需要）
+    if [ "$type" = "http" ]; then
+        export http_proxy="$proxy_url"
+        export HTTP_PROXY="$proxy_url"
+        export https_proxy="$proxy_url"
+        export HTTPS_PROXY="$proxy_url"
+    else
+        # SOCKS 代理也可以设置 http_proxy（部分应用需要）
+        export http_proxy="$proxy_url"
+        export HTTP_PROXY="$proxy_url"
+        export https_proxy="$proxy_url"
+        export HTTPS_PROXY="$proxy_url"
+    fi
+    
+    # 不使用代理的地址（可选）
+    export no_proxy="localhost,127.0.0.1,::1"
+    export NO_PROXY="localhost,127.0.0.1,::1"
+    
+    echo "✓ 代理已设置: $proxy_url"
+    echo "  环境变量: all_proxy, ALL_PROXY, http_proxy, HTTP_PROXY, https_proxy, HTTPS_PROXY"
+}
+
+# 取消代理函数
+unsetproxy() {
+    unset all_proxy ALL_PROXY
+    unset http_proxy HTTP_PROXY
+    unset https_proxy HTTPS_PROXY
+    unset no_proxy NO_PROXY
+    
+    echo "✓ 代理已取消"
+}
+
+# 查看当前代理状态
+showproxy() {
+    echo "当前代理配置:"
+    echo "  all_proxy: ${all_proxy:-未设置}"
+    echo "  http_proxy: ${http_proxy:-未设置}"
+    echo "  https_proxy: ${https_proxy:-未设置}"
+    echo "  no_proxy: ${no_proxy:-未设置}"
+}
+
+# ------------------------------------------------------------------------------
+# ranger-cd
+# ------------------------------------------------------------------------------
+#
+# ranger 退出后自动进入 ranger 最后所在目录。
+
+ranger-cd() {
+    local tempfile
+    local target_dir
+
+    tempfile="$(mktemp)" || return 1
+
+    command ranger \
+        --choosedir="$tempfile" \
+        "${@:-$PWD}"
+
+    if [[ -s "$tempfile" ]]; then
+        target_dir="$(<"$tempfile")"
+
+        if [[ -d "$target_dir" && "$target_dir" != "$PWD" ]]; then
+            builtin cd -- "$target_dir"
+        fi
+    fi
+
+    rm -f -- "$tempfile"
+}
+
+# ------------------------------------------------------------------------------
+# ex
+# ------------------------------------------------------------------------------
+#
+# 根据文件扩展名自动解压。
+#
+# 使用：
+#
+#   ex archive.tar.gz
+#   ex archive.zip
+#
+ex() {
+    # 必须传入一个文件
+    if (( $# != 1 )); then
+        print -u2 "usage: ex <archive>"
+        return 1
+    fi
+
+    local file="$1"
+
+    # 必须是普通文件
+    if [[ ! -f "$file" ]]; then
+        print -u2 "'$file' is not a valid file"
+        return 1
+    fi
+
+    case "$file" in
+        *.tar.bz2|*.tbz2|*.tar.gz|*.tgz|*.tar.xz|*.tar.zst|*.tar)
+            command tar xf -- "$file"
+            ;;
+
+        *.bz2)
+            command bunzip2 -- "$file"
+            ;;
+
+        *.gz)
+            command gunzip -- "$file"
+            ;;
+
+        *.zip)
+            command unzip -- "$file"
+            ;;
+
+        *.rar)
+            command unrar x -- "$file"
+            ;;
+
+        *.7z)
+            command 7z x -- "$file"
+            ;;
+
+        *.Z)
+            command uncompress -- "$file"
+            ;;
+
+        *.deb)
+            command ar x -- "$file"
+            ;;
+
+        *)
+            print -u2 "'$file' cannot be extracted via ex()"
+            return 1
+            ;;
+    esac
+}
+
+
+# ------------------------------------------------------------------------------
+# reload-zsh
+# ------------------------------------------------------------------------------
+
+reload-zsh() {
+    source "$ZDOTDIR/.zshrc"
+}
+
+
+# ------------------------------------------------------------------------------
+# zshconfig
+# ------------------------------------------------------------------------------
+
+zshconfig() {
+    "$EDITOR" "$ZDOTDIR/.zshrc"
+}
+
+
+# ------------------------------------------------------------------------------
+# update_ls_aliases
+# ------------------------------------------------------------------------------
+#
+# 自动检测当前系统可用的 ls 实现。
+#
+# 优先级：
+#
+#   eza
+#   exa
+#   lsd
+#   ls
+#
+# 自动修改：
+#
+#   $ZDOTDIR/.zshrc-alias
+#
+# 只管理：
+#
+#   # >>> ls aliases >>>
+#   ...
+#   # <<< ls aliases <<<
+#
+# 之间的内容，不影响其他 alias。
+#
+update_ls_aliases() {
+    local alias_file="$ZDOTDIR/.zshrc-alias"
+    local begin_marker="# >>> ls aliases >>>"
+    local end_marker="# <<< ls aliases <<<"
+    local ls_cmd
+    local tmpfile
+
+    # --------------------------------------------------------------------------
+    # 检测后端
+    # --------------------------------------------------------------------------
+
+    if (( $+commands[eza] )); then
+        ls_cmd="eza"
+
+    elif (( $+commands[exa] )); then
+        ls_cmd="exa"
+
+    elif (( $+commands[lsd] )); then
+        ls_cmd="lsd"
+
+    else
+        ls_cmd="ls"
+    fi
+
+
+    # --------------------------------------------------------------------------
+    # 准备文件
+    # --------------------------------------------------------------------------
+
+    mkdir -p -- "${alias_file:h}"
+
+    touch -- "$alias_file" || {
+        print -u2 "无法创建：$alias_file"
+        return 1
+    }
+
+    tmpfile="$(mktemp)" || {
+        print -u2 "无法创建临时文件"
+        return 1
+    }
+
+
+    # --------------------------------------------------------------------------
+    # 删除旧的受管理区块
+    # --------------------------------------------------------------------------
+
+    awk \
+        -v begin="$begin_marker" \
+        -v end="$end_marker" '
+        $0 == begin {
+            skip = 1
+            next
+        }
+
+        $0 == end {
+            skip = 0
+            next
+        }
+
+        !skip {
+            print
+        }
+    ' "$alias_file" > "$tmpfile"
+
+
+    # --------------------------------------------------------------------------
+    # 写入新的 alias
+    # --------------------------------------------------------------------------
+
+    {
+        print
+        print -r -- "$begin_marker"
+        print -r -- "# 自动生成，当前后端：$ls_cmd"
+
+        case "$ls_cmd" in
+
+            eza)
+                cat <<'EOF'
+alias l.='eza -a --icons=never | grep "^\."'
+alias ls='eza --icons=never --group-directories-first'
+alias l='eza --icons=never --group-directories-first'
+alias la='eza -a --icons=never --group-directories-first'
+alias ll='eza -la --icons=never --group-directories-first'
+EOF
+                ;;
+
+            exa)
+                cat <<'EOF'
+alias ls='exa'
+alias la='exa -a'
+alias ll='exa -la'
+alias l='exa'
+alias l.='exa -a | grep "^\."'
+EOF
+                ;;
+
+            lsd)
+                cat <<'EOF'
+alias ls='lsd --icon=never'
+alias la='lsd -a --icon=never'
+alias ll='lsd -la --icon=never'
+alias l='lsd --icon=never'
+alias l.='lsd -a --icon=never | grep "^\."'
+EOF
+                ;;
+
+            ls)
+                cat <<'EOF'
+alias ls='ls --color=auto'
+alias la='ls -A --color=auto'
+alias ll='ls -lA --color=auto'
+alias l='ls --color=auto'
+alias l.='ls -A --color=auto | grep "^\."'
+EOF
+                ;;
+
+        esac
+
+        print -r -- "$end_marker"
+
+    } >> "$tmpfile"
+
+
+    # --------------------------------------------------------------------------
+    # 替换原文件
+    # --------------------------------------------------------------------------
+
+    mv -- "$tmpfile" "$alias_file" || {
+        rm -f -- "$tmpfile"
+        print -u2 "更新失败：$alias_file"
+        return 1
+    }
+
+
+    # --------------------------------------------------------------------------
+    # 立即重新加载 Alias
+    # --------------------------------------------------------------------------
+
+    source "$alias_file"
+
+    print "ls aliases 已更新：$ls_cmd"
+}
