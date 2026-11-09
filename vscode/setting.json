@@ -4,7 +4,7 @@
   // ────────────────────────────────────────────────────────────────────────────
   "workbench.startupEditor": "newUntitledFile",
   "workbench.editor.enablePreview": true,
-  "workbench.iconTheme": "vscode-icons",
+  "workbench.iconTheme": "little-butter-icons",
   "diffEditor.ignoreTrimWhitespace": false,
 
   // 文件自动保存与资源管理器
@@ -13,7 +13,7 @@
     "**/.classpath": true,
     "**/.project": true,
     "**/.settings": true,
-    "**/.factorypath": true,
+    "**/.factorypath": true
   },
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
@@ -30,7 +30,7 @@
     "*.db3": "${capture}.${extname}-*",
     "*.sdb": "${capture}.${extname}-*",
     "*.s3db": "${capture}.${extname}-*",
-    "*.py": "${capture}.pyi, ${capture}_test.py, test_${capture}.py",
+    "*.py": "${capture}.pyi, ${capture}_test.py, test_${capture}.py"
   },
 
   // 文件保存规范
@@ -45,7 +45,7 @@
   // 编辑器外观与编辑行为
   // ────────────────────────────────────────────────────────────────────────────
   "editor.fontFamily": "'Fira Code','PingFang UI SC Heavy','Sarasa Mono SC','Sarasa Mono TC'",
-  "editor.fontSize": 16,
+  "editor.fontSize": 18,
   "editor.fontWeight": "bold",
   "editor.fontLigatures": true,
   "editor.minimap.enabled": true,
@@ -60,17 +60,17 @@
   "editor.suggestSelection": "first",
   "editor.quickSuggestions": {
     "comments": "on",
-    "strings": "on",
+    "strings": "on"
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true, // 粘贴格式化
   "editor.unicodeHighlight.allowedLocales": {
-    "zh-hans": true,
+    "zh-hans": true
   },
   // 保存时自动修复代码
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
-    "source.fixAll": "explicit",
+    "source.fixAll": "explicit"
   },
   // 编辑器细节
   "editor.bracketPairColorization.enabled": true,
@@ -97,28 +97,28 @@
   // 默认使用 Prettier；下面的语言区块会覆盖对应语言的默认格式化器。
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   },
   "[c]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.defaultFormatter": "ms-vscode.cpptools"
   },
   "[cpp]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.defaultFormatter": "ms-vscode.cpptools"
   },
   "[css]": {
-    "editor.defaultFormatter": "vscode.css-language-features",
+    "editor.defaultFormatter": "vscode.css-language-features"
   },
   "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[latex]": {
-    "editor.defaultFormatter": "iamhyc.overleaf-workshop",
+    "editor.defaultFormatter": "iamhyc.overleaf-workshop"
   },
   "[python]": {
     "editor.formatOnSaveMode": "file",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "eeyore.yapf",
-    "editor.formatOnType": false,
+    "editor.formatOnType": false
   },
 
   // Python：终端、解释器与 YAPF
@@ -127,9 +127,10 @@
   "python.terminal.executeInFileDir": true,
   "python.terminal.launchArgs": ["-m", "IPython", "--no-autoindent"],
   "python.createEnvironment.trigger": "prompt",
+  "ty.disableLanguageServices": true,
   "yapf.args": [
     "--style",
-    "{based_on_style: pep8, indent_width: 4, column_limit: 100, split_before_closing_bracket: true,indent_blank_lines = false}",
+    "{based_on_style: pep8, indent_width: 4, column_limit: 100, dedent_closing_brackets: true, indent_blank_lines: false}"
   ],
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoImportCompletions": true,
@@ -163,26 +164,26 @@
     "plaintext": false,
     "markdown": true,
     "scminput": false,
-    "c": false,
+    "c": false
   },
   "chat.viewSessions.orientation": "stacked",
   "chat.mcp.gallery.enabled": true,
   "chat.tools.terminal.autoApprove": {
     "python": true,
     "pytest": true,
-    "printf": true,
+    "printf": true
   },
   "chat.tools.urls.autoApprove": {
     "https://code.visualstudio.com": true,
     "https://github.com/microsoft/vscode/wiki/*": true,
     "https://api-docs.deepseek.com/zh-cn/api/create-chat-completion": {
       "approveRequest": false,
-      "approveResponse": true,
+      "approveResponse": true
     },
     "https://api-docs.deepseek.com": {
       "approveRequest": false,
-      "approveResponse": true,
-    },
+      "approveResponse": true
+    }
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -190,7 +191,7 @@
   // ────────────────────────────────────────────────────────────────────────────
   "notebook.cellExecutionTimeVerbosity": "verbose",
   "notebook.cellToolbarLocation": {
-    "default": "left",
+    "default": "left"
   },
   "notebook.cellFocusIndicator": "border",
   "notebook.cellToolbarVisibility": "hover",
@@ -208,7 +209,7 @@
     "**/node_modules": true,
     "**/__pycache__": true,
     "**/build": true,
-    "**/dist": true,
+    "**/dist": true
   },
   "search.smartCase": true,
   "files.watcherExclude": {
@@ -217,7 +218,7 @@
     "**/node_modules/**": true,
     "**/.venv/**": true,
     "**/build/**": true,
-    "**/dist/**": true,
+    "**/dist/**": true
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -227,14 +228,14 @@
     "kore.host": "linux",
     "121.48.161.118": "linux",
     "10.8.0.7": "linux",
-    "172.22.215.220": "linux",
+    "172.22.215.220": "linux"
   },
   "remote.SSH.defaultExtensions": [
     "anyscalecompute.anyscale-workspaces",
     "ms-python.python",
     "ms-toolsai.jupyter-renderers",
     "ms-toolsai.jupyter-keymap",
-    "ms-toolsai.jupyter",
+    "ms-toolsai.jupyter"
   ],
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -253,9 +254,9 @@
         "-pdf",
         "-pdflatex=pdflatex -shell-escape %O %S",
         "-outdir=%OUTDIR%",
-        "%DOC%",
+        "%DOC%"
       ],
-      "env": {},
+      "env": {}
     },
     {
       "name": "lualatexmk",
@@ -266,9 +267,9 @@
         "-file-line-error",
         "-lualatex",
         "-outdir=%OUTDIR%",
-        "%DOC%",
+        "%DOC%"
       ],
-      "env": {},
+      "env": {}
     },
     {
       "name": "xelatexmk",
@@ -279,15 +280,15 @@
         "-file-line-error",
         "-xelatex",
         "-outdir=%OUTDIR%",
-        "%DOC%",
+        "%DOC%"
       ],
-      "env": {},
+      "env": {}
     },
     {
       "name": "latexmk_rconly",
       "command": "latexmk",
       "args": ["%DOC%"],
-      "env": {},
+      "env": {}
     },
     {
       "name": "pdflatex",
@@ -296,96 +297,96 @@
         "-synctex=1",
         "-interaction=nonstopmode",
         "-file-line-error",
-        "%DOC%",
+        "%DOC%"
       ],
-      "env": {},
+      "env": {}
     },
     {
       "name": "bibtex",
       "command": "bibtex",
       "args": ["%DOCFILE%"],
-      "env": {},
+      "env": {}
     },
     {
       "name": "rnw2tex",
       "command": "Rscript",
       "args": [
         "-e",
-        "knitr::opts_knit$set(concordance = TRUE); knitr::knit('%DOCFILE_EXT%')",
+        "knitr::opts_knit$set(concordance = TRUE); knitr::knit('%DOCFILE_EXT%')"
       ],
-      "env": {},
+      "env": {}
     },
     {
       "name": "jnw2tex",
       "command": "julia",
       "args": ["-e", "using Weave; weave(\"%DOC_EXT%\", doctype=\"tex\")"],
-      "env": {},
+      "env": {}
     },
     {
       "name": "jnw2texminted",
       "command": "julia",
       "args": [
         "-e",
-        "using Weave; weave(\"%DOC_EXT%\", doctype=\"texminted\")",
+        "using Weave; weave(\"%DOC_EXT%\", doctype=\"texminted\")"
       ],
-      "env": {},
+      "env": {}
     },
     {
       "name": "pnw2tex",
       "command": "pweave",
       "args": ["-f", "tex", "%DOC_EXT%"],
-      "env": {},
+      "env": {}
     },
     {
       "name": "pnw2texminted",
       "command": "pweave",
       "args": ["-f", "texminted", "%DOC_EXT%"],
-      "env": {},
+      "env": {}
     },
     {
       "name": "tectonic",
       "command": "tectonic",
       "args": ["--synctex", "--keep-logs", "--print", "%DOC%.tex"],
-      "env": {},
-    },
+      "env": {}
+    }
   ],
   "latex-workshop.latex.recipes": [
     {
       "name": "latexmk",
-      "tools": ["latexmk"],
+      "tools": ["latexmk"]
     },
     {
       "name": "latexmk (latexmkrc)",
-      "tools": ["latexmk_rconly"],
+      "tools": ["latexmk_rconly"]
     },
     {
       "name": "latexmk (lualatex)",
-      "tools": ["lualatexmk"],
+      "tools": ["lualatexmk"]
     },
     {
       "name": "latexmk (xelatex)",
-      "tools": ["xelatexmk"],
+      "tools": ["xelatexmk"]
     },
     {
       "name": "pdflatex -> bibtex -> pdflatex * 2",
-      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"],
+      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
     },
     {
       "name": "Compile Rnw files",
-      "tools": ["rnw2tex", "latexmk"],
+      "tools": ["rnw2tex", "latexmk"]
     },
     {
       "name": "Compile Jnw files",
-      "tools": ["jnw2tex", "latexmk"],
+      "tools": ["jnw2tex", "latexmk"]
     },
     {
       "name": "Compile Pnw files",
-      "tools": ["pnw2tex", "latexmk"],
+      "tools": ["pnw2tex", "latexmk"]
     },
     {
       "name": "tectonic",
-      "tools": ["tectonic"],
-    },
+      "tools": ["tectonic"]
+    }
   ],
+  "workbench.colorTheme": "Little Butter (小黄油)"
 }
-
