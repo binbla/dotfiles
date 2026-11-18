@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CACHE_DIR=/var/cache/lab-motd
+CACHE_FILE="$CACHE_DIR/toolchains.txt"
+
+# 名称 | 类型 | 扫描路径
+TOOLCHAINS=(
+  "CUDA|nvcc|/usr/local/cuda*/bin/nvcc"
+  "GCC|gcc|/usr/bin/gcc*"
+  "G++|g++|/usr/bin/g++*"
+  "Clang|clang|/usr/bin/clang*"
+  "CMake|cmake|/usr/bin/cmake*"
+  "Ninja|ninja|/usr/bin/ninja*"
+)
+
+tool_version() {
+  local type="$1" binary="$2"
+
+  case "$type" in
+    nvcc)
+      "$binary" --version 2>/dev/null |
+        sed -n 's/.*release \([0-9.]*\).*/\1/p' |
+        head -1
+      ;;
+    gcc|g++)
+      "$binary" -dumpfullversion -dumpversion 2>/dev/null
+      ;;
+    clang)
+      "$binary" --version 2>/dev/null |
+        sed -n 's/.*version \([0-9.]*\).*/\1/p' |
+        head -1
+      ;;
+    cmake)
+      "$binary" --version 2>/dev/null |
+        awk 'NR==1 {print $3}'
+      ;;
+    ninja)
+      "$binary" --version 2>/dev/null | head -1
+      ;;
+  esac
+}
+
+mkdir -p "$CACHE_DIR"
+tmp=$(mktemp "$CACHE_DIR/.toolchains.XXXXXXXX")
+trap 'rm -f "$tmp"' EXIT
+
+for entry in "${TOOLCHAINS[@]}"; do
+  IFS='|' read -r name type pattern <<< "$entry"
+
+  declare -A found=()
+  declare -A defaults=()
+
+  # 系统默认命令，不依赖用户的 Conda PATH
+  default=$(
+    PATH=/usr/local/cuda/bin:/usr/local/bin:/usr/bin:/bin \
+      command -v "$type" 2>/dev/null || true
+  )
+
+  if [[ -n "$default" ]]; then
+    default=$(readlink -f "$default")
+  fi
+
+  while IFS= read -r binary; do
+    [[ -x "$binary" ]] || continue
+
+    base=${binary##*/}
+
+    # 只允许工具本体和版本化名称
+    case "$type" in
+      nvcc)  [[ "$base" =~ ^nvcc$ ]] || continue ;;
+      gcc)   [[ "$base" =~ ^gcc(-[0-9]+)?$ ]] || continue ;;
+      g++)   [[ "$base" =~ ^g\+\+(-[0-9]+)?$ ]] || continue ;;
+      clang) [[ "$base" =~ ^clang(-[0-9]+)?$ ]] || continue ;;
+      cmake) [[ "$base" == cmake ]] || continue ;;
+      ninja) [[ "$base" == ninja ]] || continue ;;
+    esac
+
+    real=$(readlink -f "$binary") || continue
+    version=$(tool_version "$type" "$binary" || true)
+
+    # 拒绝多行或非法版本信息
+    [[ "$version" =~ ^[0-9]+(\.[0-9]+)*$ ]] || continue
+
+    found["$version"]=1
+
+    if [[ "$real" == "$default" ]]; then
+      defaults["$version"]=1
+    fi
+
+  done < <(compgen -G "$pattern" | sort -V || true)
+
+  versions=""
+
+  if (( ${#found[@]} > 0 )); then
+    while IFS= read -r version; do
+      [[ -n "$version" ]] || continue
+
+      if [[ -n "${defaults[$version]+x}" ]]; then
+        versions+="${version}* "
+      else
+        versions+="${version} "
+      fi
+    done < <(printf '%s\n' "${!found[@]}" | sort -V)
+  else
+    versions="未检测到"
+  fi
+
+  printf '%s|%s\n' "$name" "${versions% }" >> "$tmp"
+
+  unset found defaults
+done
+
+chmod 644 "$tmp"
+mv -f "$tmp" "$CACHE_FILE"
